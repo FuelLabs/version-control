@@ -1,0 +1,16 @@
+.coverage_*
+.github
+CHANGELOG.md
+coverage
+dist
+dist-crx
+node_modules
+pnpm-lock.yaml
+**/*.typegen.ts
+.next
+**/storybook/**/*
+**/__generated__/
+.changeset/**.md
+**/fuel-v2-contracts
+**/storybook-static
+playwright-report/
