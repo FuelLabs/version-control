@@ -8,7 +8,7 @@ const REPOS = [
   {
     name: 'fuel-core',
     version: '0.22.0',
-    isCorrect: false,
+    isCorrect: true,
   },
   {
     name: 'sway',

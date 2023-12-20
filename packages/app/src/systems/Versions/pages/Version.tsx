@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Alert, Box, Card, Flex, Spinner, Text } from '@fuel-ui/react';
+import { Alert, Box, Card, Flex, Link, Spinner, Text } from '@fuel-ui/react';
 
 import { useCurrentVersion } from '../hooks/useCurrentVersion';
 import { useStableVersion } from '../hooks/useStableVersion';
@@ -39,7 +39,15 @@ export const Version = () => {
 
   return (
     <Layout>
-      <Layout.Content>
+      <Layout.Content css={{ pt: '$4' }}>
+        For more info, check the{' '}
+        <Link
+          isExternal
+          href="https://www.notion.so/fuellabs/Version-Control-Dashboard-a3793c09905d4f21941c063d74194301"
+          css={{ mb: '$16' }}
+        >
+          Version Control Docs
+        </Link>
         <Box.Flex gap="$20">
           <Card css={{ backgroundColor: '$intentsWarning2' }}>
             <Card.Body>
@@ -54,7 +62,7 @@ export const Version = () => {
                 <Box.Flex
                   gap="$10"
                   direction="column"
-                  css={{ minWidth: 250, maxWidth: 250 }}
+                  css={{ minWidth: 250, maxWidth: 350 }}
                 >
                   {!currentRepos?.length && <Loader />}
                   {currentRepos?.map((repo: any) => (
@@ -102,7 +110,7 @@ export const Version = () => {
                   <Box.Flex
                     gap="$10"
                     direction="column"
-                    css={{ minWidth: 250, maxWidth: 250 }}
+                    css={{ minWidth: 250, maxWidth: 350 }}
                   >
                     {!stableRepos?.length && <Loader />}
                     {stableRepos?.map((repo: any) => (
