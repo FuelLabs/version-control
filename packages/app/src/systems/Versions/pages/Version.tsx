@@ -1,35 +1,62 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Alert, Box, Card, Flex, Link, Spinner, Text } from '@fuel-ui/react';
+import { cssObj } from '@fuel-ui/css';
+import { Alert, Box, Card, Flex, Link, List, ListItem, Spinner, Text, Tooltip } from '@fuel-ui/react';
+import { Layout } from '~/systems/Core/components/Layout';
 
 import { useCurrentVersion } from '../hooks/useCurrentVersion';
 import { useStableVersion } from '../hooks/useStableVersion';
-import { Layout } from '~/systems/Core/components/Layout';
+
+const styles = {
+  repoLine: cssObj({
+    cursor: 'pointer',
+    userSelect: 'none',
+  }),
+  repoLineLink: cssObj({
+    textDecoration: 'none',
+  })
+}
 
 const Repo = ({
   name,
   version,
+  notes,
   isCorrect,
+  link,
   isBig,
 }: {
   name: string;
+  notes: Array<string>;
   version: string;
+  link?: string;
   isCorrect?: boolean;
   isBig?: boolean;
 }) => {
   const fontSize = isBig ? 'lg' : 'base';
+  const note = notes ? (
+    <List>
+      {notes.map((note, index) => (
+        <ListItem key={`${note}-${index}`}>{note}</ListItem>
+      ))}
+    </List>
+  ) : '';
+
   return (
-    <Alert status={isCorrect ? 'success' : 'warning'}>
-      <Alert.Description>
-        <Box.Flex justify={'space-between'} gap="$4">
-          <Text fontSize={fontSize} color="intentsBase12">
-            {name}
-          </Text>
-          <Text fontSize={fontSize} color="intentsBase12">
-            {version}
-          </Text>
-        </Box.Flex>
-      </Alert.Description>
-    </Alert>
+    <a style={styles.repoLineLink} target='_blank' href={link}>
+      <Tooltip content={note}>
+        <Alert status={isCorrect ? 'success' : 'warning'} style={styles.repoLine}>
+          <Alert.Description>
+            <Box.Flex justify={'space-between'} gap="$4">
+              <Text fontSize={fontSize} color="intentsBase12">
+                {name}
+              </Text>
+              <Text fontSize={fontSize} color="intentsBase12">
+                {version}
+              </Text>
+            </Box.Flex>
+          </Alert.Description>
+        </Alert>
+      </Tooltip>
+    </a>
   );
 };
 
@@ -68,6 +95,8 @@ export const Version = () => {
                   {currentRepos?.map((repo: any) => (
                     <Box.Flex direction="column" key={repo.name + repo.version}>
                       <Repo
+                        link={repo.url}
+                        notes={repo.notes}
                         name={repo.name}
                         version={repo.version}
                         isCorrect={repo.isCorrect}
@@ -88,6 +117,8 @@ export const Version = () => {
                             key={
                               dependency.name + dependency.version + dependency
                             }
+                            link={dependency.url}
+                            notes={dependency.notes}
                             name={dependency.name}
                             version={dependency.version}
                             isCorrect={dependency.isCorrect}
@@ -119,6 +150,8 @@ export const Version = () => {
                         key={repo.name + repo.version}
                       >
                         <Repo
+                          link={repo.url}
+                          notes={repo.notes}
                           name={repo.name}
                           version={repo.version}
                           isCorrect={repo.isCorrect}
@@ -141,6 +174,8 @@ export const Version = () => {
                                 dependency.version +
                                 dependency
                               }
+                              link={dependency.url}
+                              notes={dependency.notes}
                               name={dependency.name}
                               version={dependency.version}
                               isCorrect={dependency.isCorrect}
