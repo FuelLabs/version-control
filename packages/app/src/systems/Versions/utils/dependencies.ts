@@ -17,8 +17,9 @@ export function getVersionTag(version?: string) {
 
 export async function getFuelsTsDependencies(repo: any) {
   const tag = getVersionTag(repo?.version);
+  const url = `https://raw.githubusercontent.com/FuelLabs/fuels-ts/${tag}/packages/fuels/package.json`;
   const packageJson = await fetchJsonUrl({
-    url: `https://raw.githubusercontent.com/FuelLabs/fuels-ts/${tag}/packages/fuels/package.json`,
+    url,
   });
 
   const dependencies = await Promise.all(
@@ -26,41 +27,44 @@ export async function getFuelsTsDependencies(repo: any) {
       if (dependency.version) return dependency;
 
       if (dependency.name === 'fuel-core') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuels-ts/${tag}/packages/fuel-core/VERSION`;
         const response = await fetch(
-          `https://raw.githubusercontent.com/FuelLabs/fuels-ts/${tag}/packages/fuel-core/VERSION`
+          url
         );
         const version = (await response.text()).trim();
-        return { ...dependency, version };
+        return { ...dependency, version, url };
       }
 
       if (dependency.name === 'sway') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuels-ts/${tag}/packages/forc/VERSION`;
         const response = await fetch(
-          `https://raw.githubusercontent.com/FuelLabs/fuels-ts/${tag}/packages/forc/VERSION`
+          url
         );
         const version = (await response.text()).trim();
-        return { ...dependency, version };
+        return { ...dependency, version, url };
       }
 
       return dependency;
     })
   );
 
-  return { packageJson, dependencies };
+  return { packageJson, dependencies, url };
 }
 
 export async function getFuelsWalletDependencies(repo: any) {
   const tag = getVersionTag(repo?.version);
-
+  const url = `https://raw.githubusercontent.com/FuelLabs/fuels-wallet/${tag}/packages/app/package.json`;
   const packageJson = await fetchJsonUrl({
-    url: `https://raw.githubusercontent.com/FuelLabs/fuels-wallet/${tag}/packages/app/package.json`,
+    url,
   });
 
   const dependencies = await Promise.all(
     (repo.dependencies || []).map(async (dependency: any) => {
       if (dependency.version) return dependency;
       if (dependency.name === 'fuel-core') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuels-wallet/${tag}/docker/fuel-core/Dockerfile`;
         const response = await fetch(
-          `https://raw.githubusercontent.com/FuelLabs/fuels-wallet/${tag}/docker/fuel-core/Dockerfile`
+          url
         );
         const dockerfile = (await response.text()).trim();
         const regex = /FROM ghcr\.io\/fuellabs\/fuel-core:v([\d\.]+)/;
@@ -68,13 +72,14 @@ export async function getFuelsWalletDependencies(repo: any) {
 
         if (match && match[1]) {
           const version = match[1];
-          return { ...dependency, version };
+          return { ...dependency, version, url };
         }
       }
 
       if (dependency.name === 'sway') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuels-wallet/${tag}/fuel-toolchain.toml`;
         const response = await fetch(
-          `https://raw.githubusercontent.com/FuelLabs/fuels-wallet/${tag}/fuel-toolchain.toml`
+          url
         );
         const toolchain = (await response.text()).trim();
         const regex = /forc\s*=\s*"([\d\.]+)"/;
@@ -82,30 +87,31 @@ export async function getFuelsWalletDependencies(repo: any) {
 
         if (match && match[1]) {
           const version = match[1];
-          return { ...dependency, version };
+          return { ...dependency, version, url };
         }
       }
 
       if (dependency.name === 'fuels-ts') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuels-wallet/${tag}/packages/app/package.json`;
         const packageJson = await fetchJsonUrl({
-          url: `https://raw.githubusercontent.com/FuelLabs/fuels-wallet/${tag}/packages/app/package.json`,
+          url,
         });
         const version = packageJson.dependencies?.fuels;
-        return { ...dependency, version };
+        return { ...dependency, version, url };
       }
 
       return dependency;
     })
   );
 
-  return { packageJson, dependencies };
+  return { packageJson, dependencies, url };
 }
 
 export async function getFuelBlockCommiterDependencies(repo: any) {
   const tag = getVersionTag(repo?.version);
-
+  const url = `https://raw.githubusercontent.com/FuelLabs/fuel-block-committer/${tag}/Cargo.toml`;
   const cargoToml = await fetch(
-    `https://raw.githubusercontent.com/FuelLabs/fuel-block-committer/${tag}/Cargo.toml`
+    url
   );
   const cargoTomlFile = (await cargoToml.text()).trim();
   const regex = /(?<!rust-)version\s*=\s*"([^"]+)"/;
@@ -116,8 +122,9 @@ export async function getFuelBlockCommiterDependencies(repo: any) {
     (repo.dependencies || []).map(async (dependency: any) => {
       if (dependency.version) return dependency;
       if (dependency.name === 'fuel-core') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuel-block-committer/${tag}/fuel-toolchain.toml`;
         const response = await fetch(
-          `https://raw.githubusercontent.com/FuelLabs/fuel-block-committer/${tag}/fuel-toolchain.toml`
+          url
         );
         const fuelToolchainFile = (await response.text()).trim();
         const regex = /fuel-core\s*=\s*"([^"]+)"/;
@@ -125,12 +132,13 @@ export async function getFuelBlockCommiterDependencies(repo: any) {
 
         if (match && match[1]) {
           const version = match[1];
-          return { ...dependency, version };
+          return { ...dependency, version, url };
         }
       }
       if (dependency.name === 'sway') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuel-block-committer/${tag}/fuel-toolchain.toml`;
         const response = await fetch(
-          `https://raw.githubusercontent.com/FuelLabs/fuel-block-committer/${tag}/fuel-toolchain.toml`
+          url
         );
         const fuelToolchainFile = (await response.text()).trim();
         const regex = /forc\s*=\s*"([^"]+)"/;
@@ -138,18 +146,19 @@ export async function getFuelBlockCommiterDependencies(repo: any) {
 
         if (match && match[1]) {
           const version = match[1];
-          return { ...dependency, version };
+          return { ...dependency, version, url };
         }
       }
     })
   );
 
-  return { version, dependencies };
+  return { version, dependencies, url };
 }
 
 export async function getFuelsPortalDependencies(repo: any) {
+  const url = `https://raw.githubusercontent.com/FuelLabs/fuels-portal/master/packages/app/package.json`;
   const packageJson = await fetchJsonUrl({
-    url: `https://raw.githubusercontent.com/FuelLabs/fuels-portal/master/packages/app/package.json`,
+    url
   });
 
   const dependencies = await Promise.all(
@@ -157,8 +166,9 @@ export async function getFuelsPortalDependencies(repo: any) {
       if (dependency.version) return dependency;
       // 'fuel-core' 'sway' 'fuels-ts'
       if (dependency.name === 'fuel-core') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuels-portal/master/docker/fuel-core/Dockerfile`;
         const response = await fetch(
-          `https://raw.githubusercontent.com/FuelLabs/fuels-portal/master/docker/fuel-core/Dockerfile`
+          url
         );
         const dockerfile = (await response.text()).trim();
         const regex = /FROM ghcr\.io\/fuellabs\/fuel-core:v([\d\.]+)/;
@@ -166,37 +176,41 @@ export async function getFuelsPortalDependencies(repo: any) {
 
         if (match && match[1]) {
           const version = match[1];
-          return { ...dependency, version };
+          return { ...dependency, version, url };
         }
       }
 
       if (dependency.name === 'fuels-ts') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuels-portal/master/packages/app/package.json`;
         const packageJson = await fetchJsonUrl({
-          url: `https://raw.githubusercontent.com/FuelLabs/fuels-portal/master/packages/app/package.json`,
+          url
         });
         const version = packageJson.dependencies.fuels;
-        return { ...dependency, version };
+        return { ...dependency, version, url };
       }
 
       if (dependency.name === 'fuels-wallet') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuels-portal/master/packages/app/package.json`;
         const packageJson = await fetchJsonUrl({
-          url: `https://raw.githubusercontent.com/FuelLabs/fuels-portal/master/packages/app/package.json`,
+          url,
         });
         const version = packageJson.dependencies['@fuel-wallet/sdk'];
-        return { ...dependency, version };
+        return { ...dependency, version, url };
       }
 
       if (dependency.name === 'fuel-bridge') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuels-portal/master/packages/app/package.json`;
         const packageJson = await fetchJsonUrl({
-          url: `https://raw.githubusercontent.com/FuelLabs/fuels-portal/master/packages/app/package.json`,
+          url,
         });
         const version =
           packageJson.dependencies['@fuel-bridge/message-predicates'];
-        return { ...dependency, version };
+        return { ...dependency, version, url };
       }
       if (dependency.name === 'fuel-block-committer') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuels-portal/master/docker/block-committer/Dockerfile`;
         const response = await fetch(
-          `https://raw.githubusercontent.com/FuelLabs/fuels-portal/master/docker/block-committer/Dockerfile`
+          url
         );
         const dockerfile = (await response.text()).trim();
 
@@ -206,7 +220,7 @@ export async function getFuelsPortalDependencies(repo: any) {
 
         if (match && match[1]) {
           const version = match[1];
-          return { ...dependency, version };
+          return { ...dependency, version, url };
         }
       }
 
@@ -214,14 +228,14 @@ export async function getFuelsPortalDependencies(repo: any) {
     })
   );
 
-  return { packageJson, dependencies };
+  return { packageJson, dependencies, url };
 }
 
 export async function getFuelBridgeDependencies(repo: any) {
   const tag = getVersionTag(repo?.version);
-
+  const url = `https://raw.githubusercontent.com/FuelLabs/fuel-bridge/${tag}/packages/message-predicates/package.json`;
   const packageJson = await fetchJsonUrl({
-    url: `https://raw.githubusercontent.com/FuelLabs/fuel-bridge/${tag}/packages/message-predicates/package.json`,
+    url,
   });
 
   const dependencies = await Promise.all(
@@ -229,8 +243,9 @@ export async function getFuelBridgeDependencies(repo: any) {
       if (dependency.version) return dependency;
       // 'fuel-core' 'sway' 'fuels-ts'
       if (dependency.name === 'fuel-core') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuel-bridge/${tag}/docker/fuel-core/Dockerfile`;
         const response = await fetch(
-          `https://raw.githubusercontent.com/FuelLabs/fuel-bridge/${tag}/docker/fuel-core/Dockerfile`
+          url
         );
         const dockerfile = (await response.text()).trim();
         const regex = /FROM ghcr\.io\/fuellabs\/fuel-core:v([\d\.]+)/;
@@ -238,21 +253,23 @@ export async function getFuelBridgeDependencies(repo: any) {
 
         if (match && match[1]) {
           const version = match[1];
-          return { ...dependency, version };
+          return { ...dependency, version, url };
         }
       }
 
       if (dependency.name === 'fuels-ts') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuel-bridge/${tag}/packages/integration-tests/package.json`;
         const packageJson = await fetchJsonUrl({
-          url: `https://raw.githubusercontent.com/FuelLabs/fuel-bridge/${tag}/packages/integration-tests/package.json`,
+          url,
         });
         const version = packageJson.devDependencies.fuels;
-        return { ...dependency, version };
+        return { ...dependency, version, url };
       }
 
       if (dependency.name === 'fuel-block-committer') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/fuel-bridge/${tag}/docker/block-committer/Dockerfile`;
         const response = await fetch(
-          `https://raw.githubusercontent.com/FuelLabs/fuel-bridge/${tag}/docker/block-committer/Dockerfile`
+          url
         );
         const dockerfile = (await response.text()).trim();
 
@@ -262,7 +279,7 @@ export async function getFuelBridgeDependencies(repo: any) {
 
         if (match && match[1]) {
           const version = match[1];
-          return { ...dependency, version };
+          return { ...dependency, version, url };
         }
       }
 
@@ -270,14 +287,14 @@ export async function getFuelBridgeDependencies(repo: any) {
     })
   );
 
-  return { packageJson, dependencies };
+  return { packageJson, dependencies, url };
 }
 
 export async function getSwayDependencies(repo: any) {
   const tag = getVersionTag(repo?.version);
-
+  const url = `https://raw.githubusercontent.com/FuelLabs/sway/${tag}/forc/Cargo.toml`;
   const response = await fetch(
-    `https://raw.githubusercontent.com/FuelLabs/sway/${tag}/forc/Cargo.toml`
+    url
   );
   const toolchain = (await response.text()).trim();
   const regex = /version\s*=\s*"([^"]+)"/;
@@ -292,10 +309,11 @@ export async function getSwayDependencies(repo: any) {
     (repo.dependencies || []).map(async (dependency: any) => {
       if (dependency.version) return dependency;
       if (dependency.name === 'fuel-core') {
+        const url = `https://raw.githubusercontent.com/FuelLabs/sway/${getVersionTag(
+          repoVersion
+        )}/test/src/sdk-harness/Cargo.toml`;
         const response = await fetch(
-          `https://raw.githubusercontent.com/FuelLabs/sway/${getVersionTag(
-            repoVersion
-          )}/test/src/sdk-harness/Cargo.toml`
+          url
         );
         const tomlFile = (await response.text()).trim();
         const regex = /fuel-core\s*=\s*\{[^}]*version\s*=\s*"([^"]+)"/;
@@ -304,82 +322,88 @@ export async function getSwayDependencies(repo: any) {
         if (match && match[1]) {
           const version = match[1];
 
-          return { ...dependency, version };
+          return { ...dependency, version, url };
         }
       }
     })
   );
 
-  return { version: repoVersion, dependencies };
+  return { version: repoVersion, dependencies, url };
 }
 
 export async function getReposAndDependencies(rawRepos: any) {
   const repos = await Promise.all(
     rawRepos.map(async (repo: any) => {
       if (repo.name === 'sway') {
-        const { version, dependencies } = await getSwayDependencies(repo);
+        const { version, dependencies, url } = await getSwayDependencies(repo);
 
         return {
           ...repo,
+          url,
           dependencies,
           version,
         };
       }
 
       if (repo.name === 'fuels-ts') {
-        const { packageJson, dependencies } = await getFuelsTsDependencies(
+        const { packageJson, dependencies, url } = await getFuelsTsDependencies(
           repo
         );
 
         return {
           ...repo,
+          url,
           dependencies,
           version: packageJson.version,
         };
       }
 
       if (repo.name === 'fuels-wallet') {
-        const { packageJson, dependencies } = await getFuelsWalletDependencies(
+        const { packageJson, dependencies, url } = await getFuelsWalletDependencies(
           repo
         );
 
         return {
           ...repo,
+          url,
           dependencies,
           version: repo.version || packageJson.version,
         };
       }
 
       if (repo.name === 'fuel-block-committer') {
-        const { version, dependencies } =
+        const { version, dependencies, url } =
           await getFuelBlockCommiterDependencies(repo);
 
         return {
           ...repo,
+          url,
           dependencies,
           version,
         };
       }
 
       if (repo.name === 'fuels-portal') {
-        const { packageJson, dependencies } = await getFuelsPortalDependencies(
+        const { packageJson, dependencies, url } = await getFuelsPortalDependencies(
           repo
         );
 
         return {
           ...repo,
+          url,
           dependencies,
           version: packageJson.version,
         };
       }
 
       if (repo.name === 'fuel-bridge') {
-        const { packageJson, dependencies } = await getFuelBridgeDependencies(
+        const { packageJson, dependencies, url } = await getFuelBridgeDependencies(
           repo
         );
 
         return {
           ...repo,
+          url,
           dependencies,
           version: packageJson.version,
         };
@@ -402,6 +426,8 @@ export async function getReposAndDependencies(rawRepos: any) {
 
       return {
         ...dependency,
+        notes: createNotes(rootDependencyRepo),
+        needsToUpdateDeps: rootDependencyRepo?.isCorrect,
         isCorrect:
           dependency.version === rootDependencyRepo?.version &&
           rootDependencyRepo?.isCorrect,
@@ -412,15 +438,39 @@ export async function getReposAndDependencies(rawRepos: any) {
       (dependency: any) => dependency.isCorrect
     );
 
+    const repoData = {
+      ...repo,
+      isCorrect: isRepoCorrect,
+      dependencies,
+    };
+
     return [
       ...prev,
       {
-        ...repo,
-        isCorrect: isRepoCorrect,
-        dependencies,
+        ...repoData,
+        notes: createNotesRoot(repoData),
       },
     ];
   }, []);
 
   return analyzedRepos;
+}
+
+function createNotesRoot(dependency: any) {
+  const notes = [];
+
+  if (!dependency.isCorrect)  {
+    const depsNotUpdated = (dependency.dependencies || []).filter((d: any) => !d.needsToUpdateDeps);
+    if (depsNotUpdated.length === 0) return '';
+    notes.unshift(...depsNotUpdated.map((d: any) => d.notes));
+  }
+
+  return notes;
+}
+
+function createNotes(dependency: any) {
+  if (dependency.isCorrect) return '';
+  const depsNotUpdated = (dependency.dependencies || []).filter((d: any) => !d.isCorrect);
+  
+  return [`${dependency.name} missing version ${depsNotUpdated.map((d: any) => `${d.name}@${d.version}`).join(', ')}`];
 }

@@ -36,9 +36,6 @@ const REPOS = [
         name: 'fuel-core',
       },
       {
-        name: 'sway',
-      },
-      {
         name: 'fuels-ts',
       },
     ],
