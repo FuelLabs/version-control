@@ -7,95 +7,122 @@ import { getReposAndDependencies } from '../utils/dependencies';
 const REPOS = [
   {
     name: 'fuel-core',
-    version: '0.20.8',
+    version: '0.26.0',
     isCorrect: true,
   },
   {
     name: 'sway',
-    version: '0.46.1',
+    version: '0.59.0',
     dependencies: [
       {
         name: 'fuel-core',
-        version: '0.20.8',
+        version: '0.26.0',
       },
     ],
   },
   {
     name: 'fuels-ts',
-    version: '0.67.0',
+    version: '0.88.1',
     dependencies: [
       {
         name: 'fuel-core',
+        version: '0.26.0',
       },
       {
         name: 'sway',
+        version: '0.59.0',
       },
     ],
   },
   {
     name: 'fuels-wallet',
-    version: '0.13.10',
+    version: '0.20.0',
     dependencies: [
       {
         name: 'fuel-core',
+        version: '0.26.0',
       },
       {
         name: 'sway',
+        version: '0.59.0',
       },
       {
         name: 'fuels-ts',
+        version: '0.88.1',
+      },
+    ],
+  },
+  {
+    name: 'fuel-connectors',
+    version: '0.5.0',
+    dependencies: [
+      {
+        name: 'fuel-core',
+        version: '0.26.0',
+      },
+      {
+        name: 'fuels-ts',
+        version: '0.88.1',
       },
     ],
   },
   {
     name: 'fuel-block-committer',
-    version: '0.1.0',
+    version: '0.4.0',
     dependencies: [
       {
         name: 'fuel-core',
-      },
-      {
-        name: 'sway',
+        version: '0.26.0',
       },
     ],
   },
   {
     name: 'fuel-bridge',
-    version: '0.3.0',
+    version: '0.5.0',
     dependencies: [
       {
         name: 'fuel-core',
+        version: '0.26.0',
       },
       {
         name: 'fuels-ts',
+        version: '0.85.0',
       },
       {
         name: 'fuel-block-committer',
+        version: '0.4.0',
       },
     ],
   },
   {
-    name: 'fuels-portal',
+    name: 'fuel-explorer/explorer',
+    version: '0.0.1',
     dependencies: [
       {
         name: 'fuel-core',
-        version: '0.20.7',
+        version: '0.26.0',
       },
       {
         name: 'fuels-ts',
-        version: '0.67.0',
+        version: '0.88.1',
+      },
+    ],
+  },
+  {
+    name: 'fuel-explorer/bridge',
+    version: '0.0.1',
+    dependencies: [
+      {
+        name: 'fuel-core',
+        version: '0.26.0',
       },
       {
-        name: 'fuel-bridge',
-        version: '0.3.0',
+        name: 'fuels-ts',
+        version: '0.88.1',
       },
       {
-        name: 'fuels-wallet',
-        version: '0.13.10',
-      },
-      {
-        name: 'fuel-block-committer',
-        version: '0.1.0',
+        name: 'fuel-connectors',
+        version: '0.5.0',
       },
     ],
   },

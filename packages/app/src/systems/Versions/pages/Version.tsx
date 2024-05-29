@@ -61,7 +61,7 @@ const Repo = ({
 };
 
 export const Version = () => {
-  const { repos: currentRepos } = useCurrentVersion();
+  // const { repos: currentRepos } = useCurrentVersion();
   const { repos: stableRepos } = useStableVersion();
 
   return (
@@ -76,7 +76,7 @@ export const Version = () => {
           Version Control Docs
         </Link>
         <Box.Flex gap="$20">
-          <Card css={{ backgroundColor: '$intentsWarning2' }}>
+          {/* <Card css={{ backgroundColor: '$intentsWarning2' }}>
             <Card.Body>
               <Box.Flex direction="column" gap="$10" css={{ flex: '1' }}>
                 <Text
@@ -130,12 +130,12 @@ export const Version = () => {
                 </Box.Flex>
               </Box.Flex>
             </Card.Body>
-          </Card>
+          </Card> */}
           <Card css={{ backgroundColor: '$intentsSuccess2' }}>
             <Card.Body>
               <Box.Flex direction="column" gap="$10" css={{ flex: '1' }}>
                 <Text color="brand" fontSize="3xl">
-                  BETA-4
+                  Testnet
                 </Text>
                 <Box.Flex gap="$40">
                   <Box.Flex
